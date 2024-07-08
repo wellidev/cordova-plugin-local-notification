@@ -175,12 +175,31 @@ public final class Builder {
             builder.setSmallIcon(options.getSmallIcon());
         }
 
+        if (options.useFullScreenIntent()) {
+            applyFullScreenIntent(builder);
+        }
+
         applyStyle(builder);
         applyActions(builder);
         applyDeleteReceiver(builder);
         applyContentReceiver(builder);
 
         return new Notification(context, options, builder);
+    }
+
+    void applyFullScreenIntent(NotificationCompat.Builder builder) {
+        String pkgName  = context.getPackageName();
+
+        Intent intent = context
+            .getPackageManager()
+            .getLaunchIntentForPackage(pkgName)
+            .putExtra("launchNotificationId", options.getId());
+
+        int reqCode = random.nextInt();
+        // request code and flags not added for demo purposes
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, reqCode, intent, FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+        builder.setFullScreenIntent(pendingIntent, true);
     }
 
     /**
@@ -373,13 +392,8 @@ public final class Builder {
 
         int reqCode = random.nextInt();
 
-        int flags = FLAG_UPDATE_CURRENT;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-            flags = PendingIntent.FLAG_MUTABLE | FLAG_UPDATE_CURRENT;
-        }
-
         PendingIntent deleteIntent = PendingIntent.getBroadcast(
-                context, reqCode, intent, flags);
+                context, reqCode, intent, FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         builder.setDeleteIntent(deleteIntent);
     }
@@ -407,13 +421,8 @@ public final class Builder {
 
         int reqCode = random.nextInt();
 
-        int flags = FLAG_UPDATE_CURRENT;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-            flags = PendingIntent.FLAG_MUTABLE | FLAG_UPDATE_CURRENT;
-        }
-
         PendingIntent contentIntent = PendingIntent.getService(
-                context, reqCode, intent, flags);
+                context, reqCode, intent, FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         builder.setContentIntent(contentIntent);
     }
@@ -462,13 +471,8 @@ public final class Builder {
 
         int reqCode = random.nextInt();
 
-        int flags = FLAG_UPDATE_CURRENT;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-            flags = PendingIntent.FLAG_MUTABLE | FLAG_UPDATE_CURRENT;
-        }
-
         return PendingIntent.getService(
-                context, reqCode, intent, flags);
+                context, reqCode, intent, FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
     }
 
     /**
