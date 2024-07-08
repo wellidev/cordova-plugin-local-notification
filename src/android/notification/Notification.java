@@ -216,14 +216,9 @@ public final class Notification {
 
             if (!date.after(new Date()) && trigger(intent, receiver))
                 continue;
-            
-            int flags = FLAG_UPDATE_CURRENT;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-                flags = PendingIntent.FLAG_MUTABLE | FLAG_UPDATE_CURRENT;
-            }
 
             PendingIntent pi = PendingIntent.getBroadcast(
-                    context, 0, intent, flags);
+                    context, 0, intent, FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
             try {
                 switch (options.getPrio()) {
@@ -309,13 +304,8 @@ public final class Notification {
         for (String action : actions) {
             Intent intent = new Intent(action);
 
-            int flags = FLAG_UPDATE_CURRENT;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-                flags = PendingIntent.FLAG_MUTABLE | FLAG_UPDATE_CURRENT;
-            }
-
             PendingIntent pi = PendingIntent.getBroadcast(
-                    context, 0, intent, flags);
+                    context, 0, intent, 0 | PendingIntent.FLAG_IMMUTABLE);
 
             if (pi != null) {
                 getAlarmMgr().cancel(pi);
