@@ -407,8 +407,13 @@ public final class Builder {
 
         int reqCode = random.nextInt();
 
+        int flags = FLAG_UPDATE_CURRENT;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            flags = PendingIntent.FLAG_MUTABLE | FLAG_UPDATE_CURRENT;
+        }
+
         PendingIntent contentIntent = PendingIntent.getService(
-                context, reqCode, intent, FLAG_UPDATE_CURRENT);
+                context, reqCode, intent, flags);
 
         builder.setContentIntent(contentIntent);
     }
