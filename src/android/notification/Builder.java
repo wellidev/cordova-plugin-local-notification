@@ -175,9 +175,9 @@ public final class Builder {
             builder.setSmallIcon(options.getSmallIcon());
         }
 
-        if (options.useFullScreenIntent()) {
-            applyFullScreenIntent(builder);
-        }
+        // if (options.useFullScreenIntent()) {
+        //     applyFullScreenIntent(builder);
+        // }
 
         applyStyle(builder);
         applyActions(builder);
